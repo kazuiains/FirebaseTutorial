@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "969243487546",
+    "project_id": "testing-2351d",
+    "storage_bucket": "testing-2351d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:969243487546:android:cfa8c00ffa3425ff683403",
+        "android_client_info": {
+          "package_name": "id.adiyusuf.remoteconfig"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOodM3zaYss_grzFQvv5NOdpC-0Y8uG8Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
