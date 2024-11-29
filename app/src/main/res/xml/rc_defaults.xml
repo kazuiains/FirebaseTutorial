@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>greeting_max_length</key>
+        <value>100</value>
+    </entry>
+    <entry>
+        <key>show_background_image</key>
+        <value>false</value>
+    </entry>
+</defaultsMap>

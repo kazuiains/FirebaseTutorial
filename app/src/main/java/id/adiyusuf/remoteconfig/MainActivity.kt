@@ -7,15 +7,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.LocalTextStyle
@@ -26,6 +22,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,7 +37,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import id.adiyusuf.remoteconfig.ui.theme.RemoteConfigTheme
-import kotlin.math.max
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +47,7 @@ class MainActivity : ComponentActivity() {
                 val state = rememberScrollState()
                 var value by remember { mutableStateOf("") }
                 var showImage by remember { mutableStateOf(false) }
+                var maxLength by remember { mutableIntStateOf(0) }
 
                 val remoteConfig = Firebase.remoteConfig
                 val configSettings = remoteConfigSettings {
@@ -59,6 +56,7 @@ class MainActivity : ComponentActivity() {
                 remoteConfig.setConfigSettingsAsync(
                     configSettings
                 )
+                remoteConfig.setDefaultsAsync(R.xml.rc_defaults)
                 remoteConfig.fetchAndActivate().addOnCompleteListener {
                     if (it.isSuccessful) {
                         Log.i(TAG, "Remote Config parameters updated ")
@@ -69,13 +67,18 @@ class MainActivity : ComponentActivity() {
 
                 LaunchedEffect(key1 = true) {
                     showImage = Firebase.remoteConfig.getBoolean("show_background_image")
+                    maxLength =
+                        if (Firebase.remoteConfig.getString("greeting_max_length").isNotEmpty())
+                            Firebase.remoteConfig.getString("greeting_max_length").toInt() else 100
                 }
 
                 Screen(
                     state,
                     value = value,
                     onValueChange = {
-                        value = it
+                        if (it.length <= maxLength) {
+                            value = it
+                        }
                     },
                     show = showImage,
                 )
@@ -84,7 +87,7 @@ class MainActivity : ComponentActivity() {
     }
 
     companion object {
-        val TAG = "MainActivity"
+        const val TAG = "MainActivity"
     }
 }
 
@@ -136,7 +139,7 @@ fun Screen(
                     maxLines = 8,
                     textStyle = LocalTextStyle.current.copy(
                         textAlign = TextAlign.Center
-                    )
+                    ),
                 )
             }
         }
